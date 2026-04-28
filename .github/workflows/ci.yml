@@ -36,6 +36,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/viateashka/is-lab-app:latest
+            ghcr.io/viateashka/is-lab-app:${{ github.sha }}
 
