@@ -13,7 +13,7 @@ COPY . .
 RUN rm -rf obj/ bin/ IsLabApp.Tests/obj/ IsLabApp.Tests/bin/
 
 # Собираем только основной проект
-RUN dotnet publish "IsLabApp.csproj" -c Release -o /app/publish
+RUN dotnet publish "IsLabApp.csproj" -c Release -o /app/publish -p:ExcludeFromBuild=true
 
 # 2. Этап запуска (Runtime stage)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
