@@ -7,7 +7,7 @@ COPY *.csproj ./
 RUN dotnet restore
 
 COPY . .
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish "IsLabApp.csproj" -c Release -o /app/publish
 
 # этап runtime: запуск опубликованного приложения
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
