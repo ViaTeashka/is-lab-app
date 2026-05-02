@@ -1,23 +1,26 @@
-# этап build: восстановление пакетов, сборка, публикация
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# 1. Этап сборки (Build stage)
+FROM ://microsoft.com AS build
 WORKDIR /src
 
-# копировать только нужные файлы
-COPY *.csproj ./
-RUN dotnet restore
+# Копируем файл проекта и восстанавливаем зависимости
+COPY ["IsLabApp.csproj", "./"]
+RUN dotnet restore "IsLabApp.csproj"
 
+# Копируем всё остальное
 COPY . .
+
+# УДАЛЯЕМ МУСОР (obj/bin), который мешает сборке
+RUN rm -rf obj/ bin/ IsLabApp.Tests/obj/ IsLabApp.Tests/bin/
+
+# Собираем только основной проект
 RUN dotnet publish "IsLabApp.csproj" -c Release -o /app/publish
 
-# этап runtime: запуск опубликованного приложения
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# 2. Этап запуска (Runtime stage)
+FROM ://microsoft.com AS final
 WORKDIR /app
-
-# копировать только нужные файлы из этапа сборки
 COPY --from=build /app/publish .
 
-# выставить порт приложения 8080
+# Выставляем порт и запускаем
 EXPOSE 8080
-
-# запускать dotnet <app>.dll
 ENTRYPOINT ["dotnet", "IsLabApp.dll"]
+
