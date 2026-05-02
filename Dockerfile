@@ -1,5 +1,5 @@
 # 1. Этап сборки (Build stage)
-FROM ://microsoft.com AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Копируем файл проекта и восстанавливаем зависимости
@@ -16,7 +16,7 @@ RUN rm -rf obj/ bin/ IsLabApp.Tests/obj/ IsLabApp.Tests/bin/
 RUN dotnet publish "IsLabApp.csproj" -c Release -o /app/publish
 
 # 2. Этап запуска (Runtime stage)
-FROM ://microsoft.com AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
