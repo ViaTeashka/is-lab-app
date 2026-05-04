@@ -2,24 +2,19 @@ name: CD Workflow
 
 on:
   workflow_run:
-    workflows: ["Lab10: add versioning tags"] # Это имя из твоего ci.yml
+    workflows: ["Lab10: add versioning tags"]
     types: [completed]
-  workflow_dispatch: # Чтобы ты мог запустить деплой кнопкой сам
+  workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # Это заставит задание прийти на твою виртуалку
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin
-            cd ${{ secrets.DEPLOY_PATH }}
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
+      - name: Update and Restart Application
+        run: |
+          echo ${{ secrets.GHCR_TOKEN }} | sudo docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin
+          cd /home/deployer/deploy/is-stack
+          sudo docker compose pull
+          sudo docker compose up -d
+          sudo docker image prune -f
