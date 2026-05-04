@@ -13,7 +13,6 @@ jobs:
     steps:
       - name: Update and Restart Application
         run: |
-          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin
           cd /home/deployer/deploy/is-stack
           docker compose pull
           docker compose up -d
